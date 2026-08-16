@@ -88,6 +88,8 @@ INSERT INTO Pedidos (cliente_id, produto_id, quantidade, data_pedido) VALUES
 
 -- > EXERCIUCIOS AULA BANCO DE DADOS II - 3 BIMESTRE < 
 
+-- > EXERCÍCIOS AULA BANCO DE DADOS II - 3 BIMESTRE < 
+
 -- Nível 1
 
 SELECT * FROM Produtos; -- seleciona todos os produtos cadastrados
@@ -103,13 +105,12 @@ SELECT * FROM Produtos ORDER BY estoque DESC; -- ordena os produtos em ordem dec
 
 SELECT * FROM Produtos
 WHERE nome LIKE '%Gamer%'; -- lista todos os produtos com gamer no nome
--- > %gamer = nome que começa com 'gamer', gamer% = nome que termina com 'gamer' e -> %gamer% = nome que tem 'gamer' em qualquer posição
+-- > 'gamer%' = nome que começa com 'gamer', '%gamer' = nome que termina com 'gamer' e '%gamer%' = nome que tem 'gamer' em qualquer posição
 
 SELECT DISTINCT cidade FROM Clientes; -- seleciona apenas as cidades únicas na tabela clientes
 
 
 -- Nível 2
-
 
 SELECT COUNT(*) FROM Pedidos; -- conta quantos pedidos teve e retorna um número inteiro
 
@@ -117,24 +118,43 @@ SELECT MAX(preco), MIN(preco) FROM Produtos; -- retorna os valores do produto ma
 
 SELECT SUM(preco * estoque) FROM Produtos; -- valor total de todos os produtos em estoque
 
-SELECT cidade, COUNT(*) FROM Clientes GROUP BY(cidade); -- quantos clientes moram em cada cidade
+SELECT cidade, COUNT(*) FROM Clientes GROUP BY cidade; -- quantos clientes moram em cada cidade
 
 
 -- Nível 3
 
+SELECT Clientes.nome AS nome_cliente, Produtos.nome AS nome_produto
+FROM Pedidos
+INNER JOIN Clientes ON Pedidos.cliente_id = Clientes.id
+INNER JOIN Produtos ON Pedidos.produto_id = Produtos.id; -- junta as tabelas para mostrar o nome do cliente e o produto que ele comprou
 
-SELECT
+SELECT Clientes.nome AS nome_cliente, Produtos.nome AS nome_produto FROM Pedidos
+INNER JOIN Clientes ON Pedidos.cliente_id = Clientes.id
+INNER JOIN Produtos ON Pedidos.produto_id = Produtos.id
+WHERE Clientes.nome = 'Ana Lisboa'; -- lista os produtos comprados apenas pela cliente ana lisboa
 
-SELECT
-
-SELECT
+SELECT Clientes.nome AS nome_cliente, Produtos.nome AS nome_produto, Pedidos.data_pedido FROM Pedidos
+INNER JOIN Clientes ON Pedidos.cliente_id = Clientes.id
+INNER JOIN Produtos ON Pedidos.produto_id = Produtos.id
+ORDER BY Pedidos.data_pedido DESC; -- mostra os pedidos ordenados pela data, do mais recente para o mais antigo
 
 
 -- Nível 4
 
+SELECT Clientes.nome, COUNT(Pedidos.id) AS contagem_pedidos FROM Pedidos
+INNER JOIN Clientes ON Pedidos.cliente_id = Clientes.id
+GROUP BY Clientes.nome
+ORDER BY contagem_pedidos DESC
+LIMIT 1; -- conta os pedidos de cada cliente e mostra apenas o cliente que comprou mais vezes
 
-SELECT
+SELECT Pedidos.id AS id_pedido, SUM(Produtos.preco * Pedidos.quantidade) AS valor_total
+FROM Pedidos
+INNER JOIN Produtos ON Pedidos.produto_id = Produtos.id
+GROUP BY Pedidos.id; -- calcula o valor total de cada pedido multiplicando o preco pela quantidade
 
-SELECT
-
-SELECT
+SELECT Produtos.nome, SUM(Pedidos.quantidade) AS total_vendido
+FROM Pedidos
+INNER JOIN Produtos ON Pedidos.produto_id = Produtos.id
+GROUP BY Produtos.nome
+ORDER BY total_vendido DESC
+LIMIT 1; -- soma as quantidades vendidas de cada produto e mostra apenas qual foi o mais vendido
